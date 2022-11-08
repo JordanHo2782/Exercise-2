@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-"""Test the submitted solutions for exercise 1, problem 1 of AutoGIS."""
+"""Test the submitted solutions for exercise 2, problem 1 of AutoGIS."""
 
 import pathlib
 import tempfile
@@ -55,8 +55,8 @@ POLYGON_WKT = (
 )
 
 
-class Test_Exercise_1_Problem_1:
-    @points(1, "Problem 1: kcord pair list")
+class Test_Exercise_2_Problem_1:
+    @points(1, "Problem 1: Not sure whether your `coordinate_pair` list is okay?")
     def test_coordinate_pair(self, problem1):
         assert problem1.coordinate_pairs == [
             (29.99671173095703, 63.748023986816406),
@@ -120,7 +120,7 @@ class Test_Exercise_1_Problem_1:
     @points(
         0.5,
         (
-            "Problem 1: `geo` is not a `GeoDataFrame`, or it"
+            "Problem 1: `geo` is not a `GeoDataFrame`, or it "
             "contains the wrong data"
         )
     )
@@ -128,7 +128,7 @@ class Test_Exercise_1_Problem_1:
         assert isinstance(problem1.geo, geopandas.GeoDataFrame)
         assert problem1.geo.at[0, "geometry"] == shapely.wkt.loads(POLYGON_WKT)
 
-    @points(0.5, "Problem 1: the geo-data frame `geo` does not have a CRS")
+    @points(0.5, "Problem 1: The geo-data frame `geo` does not have a CRS")
     def test_gdf_crs(self, problem1):
         assert isinstance(problem1.geo, geopandas.GeoDataFrame)
         assert problem1.geo.crs == pyproj.CRS("EPSG:4326")
@@ -140,3 +140,13 @@ class Test_Exercise_1_Problem_1:
             problem1._PLOT_1.get_figure().savefig(figure_path)
             image_hash = dhash.dhash_int(PIL.Image.open(figure_path))
         assert image_hash == 21330220210094937413253399277172186490
+
+    @points(
+        1,
+        "Problem 1: Save the data to a GeoPackage "
+        "`mysterious-polygon.gpkg` in `DATA_DIRECTORY`"
+    )
+    def test_shapefile(self, problem1):
+        assert (problem1.DATA_DIRECTORY / "mysterious-polygon.gpkg").exists()
+        df = geopandas.read_file(problem1.DATA_DIRECTORY / "mysterious-polygon.gpkg")
+        assert len(df) == 1
